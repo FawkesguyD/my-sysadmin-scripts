@@ -4,12 +4,58 @@
 #
 
 set -euo pipefail
+IFS='
+'
 
-usr=$1
+usage() {
+  cat <<EOF
+Usage: script.sh -u USERNAME [-s | -m | -d | -b]
 
-mkdir "/home/${usr}"
-touch "/home/${usr}/.bashrc"
-cat <<'EOF' > ~/.bashrc
+Options:
+  -u USERNAME     User
+  -s              Create .ssh directory
+  -m              Modify
+  -b STRING       Add string to .bashrc
+  -d              Delete home dir
+  -h              Show help message
+}
+EOF
+  exit 2
+}
+
+usr=""
+createsshdir=false
+modify=false
+flush=false
+bashstring=""
+
+while getopts ":u:b:hsmd" opt; do
+  case "${opt}" in
+    u) usr="${OPTARG}" ;;
+    s) createsshdir=true ;;
+    m) modify=true ;;
+    b) bashstring="${OPTARG}" ;;
+    d) flush=true ;;
+    h) usage; exit 0 ;;
+    :) echo "Option -${OPTARG} need an argument" >&2; usage; exit 2 ;;
+    \?) echo "ERROR: Unknown option ${OPTARG}" >&2; usage; exit 2 ;;
+  esac
+done
+shift "$((OPTIND-1))"
+
+
+usrdir="/home/${usr}"
+
+if [[ "${flush}" == true ]]; then
+  rm -rf "${usrdir}"
+  logger -t script "INFO[${usr}]: delete home dir finished successfully."
+  exit 0
+fi
+
+
+if [[ "${modify}" == false ]]; then
+  mkdir "${usrdir}"
+  cat <<'EOF' > "${usrdir}/.bashrc"
 # Only for interactive shells
 case $- in
     *i*) ;;
@@ -29,6 +75,19 @@ alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
 EOF
+  logger -t script "INFO[${usr}]: setup finished successfully."
+fi
 
-logger -t script "Setup for ${usr} finished successfully."
+
+if [[ "${createsshdir}" == true ]]; then
+  mkdir "${usrdir}/.ssh"
+  logger -t script "INFO[${usr}]: add .ssh dir"
+fi
+
+if [[ "${bashstring}" != "" ]]; then
+  echo "${bashstring}" >> "${usrdir}/.bashrc"
+  logger -t script "INFO[${usr}]: new string to bashrc added successfully."
+fi
+
+
 echo "Пользователь ${usr} добавлен в систему, информация записана в лог"
