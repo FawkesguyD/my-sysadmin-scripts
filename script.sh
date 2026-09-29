@@ -16,7 +16,6 @@ Options:
   -b STRING       Add string to .bashrc
   -d              Delete home dir
   -h              Show help message
-}
 EOF
   exit 2
 }
@@ -32,6 +31,10 @@ while getopts ":u:b:hsmd" opt; do
     u)
       if [[ ! "${OPTARG}" =~ ^[a-z_][a-z0-9_-]*$ ]]; then
         echo "ERROR: invalid username ${OPTARG}" >&2
+        exit 2
+      fi
+      if ! id "${OPTARG}" &>/dev/null; then
+        echo "ERROR: user ${OPTARG} does not exist" >&2
         exit 2
       fi
       usr="${OPTARG}"
@@ -116,8 +119,7 @@ alias la='ls -A'
 alias l='ls -CF'
 EOF
   logger -t script "INFO[${usr}]: setup home directory ${usrdir} finished successfully."
-
-echo "Home directory for user ${usr} created, message send to log"
+  echo "Home directory for user ${usr} created, message send to log"
 fi
 
 
