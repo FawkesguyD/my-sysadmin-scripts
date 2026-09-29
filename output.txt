@@ -1,1 +1,27 @@
-# output
+user@example:~$ sudo ./setup.sh -u bob
+Home directory for user bob created, message send to log
+
+
+user@example:~$ sudo ./setup.sh -u bob -m -s
+For user bob created .ssh directory
+
+
+user@example:~$ sudo ./setup.sh -u bob -m -b "alias mkd='mkdir'"
+For user bob added new string (alias mkd='mkdir') to /home/bob/.bashrc
+
+
+user@example:~$ sudo ./setup.sh -u bob -d
+Deleted home directory /home/bob
+
+
+user@example:~$ sudo ./setup.sh
+ERROR: -u flag required
+Usage: script.sh -u USERNAME [-s | -m | -d | -b]
+
+Options:
+  -u USERNAME     User
+  -s              Create .ssh directory
+  -m              Modify
+  -b STRING       Add string to .bashrc
+  -d              Delete home dir
+  -h              Show help message
