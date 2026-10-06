@@ -1,0 +1,5 @@
+services:
+  script:
+    container_name: my-sysadmin-script
+    image: my-script:latest
+    command: ["-u", "root", "-s"]
