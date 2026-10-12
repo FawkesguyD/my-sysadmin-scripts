@@ -61,8 +61,8 @@ nginx -t
 nginx -s reload
 
 
-mkdir -p var/www/static-content
-cp -r ./assets/ var/www/static-content
+mkdir -p /var/www/static-content
+cp -r ./assets/. /var/www/static-content
 cat <<'EOF' > "/etc/systemd/system/script.service"
 [Unit]
 Description=script service
@@ -82,4 +82,6 @@ ExecStop=docker stop -t 10 script
 WantedBy=multi-user.target
 EOF
 systemctl daemon-reload
-systemctl enable --now script.service 
+systemctl enable --now script.service
+
+echo "!Настройка хоста выполнена!"
