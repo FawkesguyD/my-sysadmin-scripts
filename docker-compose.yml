@@ -1,7 +1,7 @@
 services:
   script:
-    container_name: my-sysadmin-script
-    image: ghcr.io/fawkesguyd/my-script:latest
+    container_name: script
+    image: ghcr.io/fawkesguyd/script:latest
     ports:
       - "8080:8080"
     volumes:
