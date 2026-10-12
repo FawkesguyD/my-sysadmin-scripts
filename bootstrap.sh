@@ -61,6 +61,7 @@ nginx -t
 nginx -s reload
 
 
+mkdir -p var/www/static-content
 cp -r ./assets/ var/www/static-content
 cat <<'EOF' > "/etc/systemd/system/script.service"
 [Unit]
