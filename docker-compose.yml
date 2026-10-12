@@ -1,5 +1,5 @@
 services:
   script:
     container_name: my-sysadmin-script
-    image: my-script:latest
+    image: ghcr.io/fawkesguyd/my-script:latest
     command: ["-u", "root", "-s"]
