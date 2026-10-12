@@ -1,15 +1,13 @@
 #!/bin/bash
 #
-# bootstrap script: настроивает raid1 для двух девайсов, создает и монтирует volume, создает script.service и добавляет его в автозагрузку запускает script.service, настраивает reverse proxy
+# bootstrap script: настроивает raid1 для двух дисков, создает logical volume, создает script.service и добавляет его в автозагрузку запускает script.service, настраивает reverse proxy
 #
 set -euo pipefail
 
 apt update && apt install -y mdadm lvm2 docker.io nginx openssl
 
 
-echo $GH_TOKEN | docker login ghcr.io -u fawkesguyd --password-stdin
 docker build -t ghcr.io/fawkesguyd/script:latest .
-docker push ghcr.io/fawkesguyd/script:latest
 
 
 mkdir -p /mnt/raid-lab
@@ -63,7 +61,7 @@ nginx -t
 nginx -s reload
 
 
-cp ./assets/ var/www/static-content
+cp -r ./assets/ var/www/static-content
 cat <<'EOF' > "/etc/systemd/system/script.service"
 [Unit]
 Description=script service
