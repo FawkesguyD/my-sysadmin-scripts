@@ -3,6 +3,7 @@
 # bootstrap script: настроивает raid1 для двух дисков, создает logical volume, создает script.service и добавляет его в автозагрузку запускает script.service, настраивает reverse proxy
 #
 set -euo pipefail
+[ -e /dev/md0 ] && { echo "Хост уже настроен, повторный запуск не требуется"; exit 0; }
 
 apt update && apt install -y mdadm lvm2 docker.io nginx openssl
 
